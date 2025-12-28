@@ -1,20 +1,34 @@
 import React from "react";
-import SuccessStory1 from "../../pages/SuccessStories/SuccessStory1";
-import WhyCouplesFindSuccess from "../../pages/SuccessStories/WhyCouplesFindSuccess";
-import SuccessStory2 from "../../pages/SuccessStories/SuccessStory2";
-import SuccessStoriesSubpage from "../../pages/SuccessStories/SuccessStoriesSubpage";
-import StatsSection from "../../pages/SuccessStories/StatsSection";
+import { View, Text, StyleSheet } from "react-native";
+import AppLayout from "../layout/AppLayout";
 
-const SuccessStoriesMain = () => {
+const SuccessStories = () => {
   return (
-    <div>
-      <SuccessStory1 />
-      <StatsSection />
-      <WhyCouplesFindSuccess />
-      <SuccessStory2 />
-      <SuccessStoriesSubpage />
-    </div>
+    <AppLayout>
+      <View style={styles.container}>
+        <Text style={styles.text}>Success Stories</Text>
+        <Text style={styles.subtext}>This page is being converted to React Native</Text>
+      </View>
+    </AppLayout>
   );
 };
 
-export default SuccessStoriesMain;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  subtext: {
+    fontSize: 16,
+    color: "#666",
+  },
+});
+
+export default SuccessStories;

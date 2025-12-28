@@ -1,11 +1,22 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import BackgroundSignIn from "../assets/SignIn/BackgroundSignIn.jpg";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+  ActivityIndicator,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignUp = () => {
-  const navigate = useNavigate();
+  const navigation = useNavigation();
 
   const [formData, setFormData] = useState({
     profileFor: "",
@@ -19,256 +30,315 @@ const SignUp = () => {
   const [apiMessage, setApiMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const handleChange = (name, value) => {
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+  };
+
   const validate = () => {
-    let temp = {};
+    const newErrors = {};
 
-    temp.profileFor = formData.profileFor
-      ? ""
-      : "Please select a profile type.";
-    temp.gender = formData.gender ? "" : "Please select gender.";
+    if (!formData.profileFor) newErrors.profileFor = "Please select profile for";
+    if (!formData.gender) newErrors.gender = "Please select gender";
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.phone) newErrors.phone = "Phone is required";
+    if (!formData.password) newErrors.password = "Password is required";
 
-    temp.email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-      ? ""
-      : "Enter a valid email address.";
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
 
-    temp.phone = /^[0-9]{10}$/.test(formData.phone)
-      ? ""
-      : "Enter a valid 10-digit phone number.";
+    if (formData.password && formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
 
-    temp.password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/.test(
-      formData.password
-    )
-      ? ""
-      : "Password must be at least 8 characters, include uppercase, lowercase and a symbol.";
-
-    setErrors(temp);
-    return Object.values(temp).every((x) => x === "");
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setApiMessage("");
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSignUp = async () => {
     if (!validate()) return;
 
     setLoading(true);
     setApiMessage("");
 
-    const payload = {
-      email: formData.email,
-      mobileNumber: formData.phone,
-      password: formData.password,
-      role: "USER",
-      profileFor: formData.profileFor,
-      gender: formData.gender,
-    };
-
     try {
-      const res = await axios.post(
-        "https://mttlprv1-production.up.railway.app/api/v1/users/register",
-        payload
+      const response = await axios.post(
+        "https://mttlprv1-production.up.railway.app/jwt/signup",
+        formData
       );
 
-      // Save gender for login
-      localStorage.setItem("signupGender", formData.gender);
-
-      setApiMessage("Registration Successful!");
-      setTimeout(() => navigate("/signin"), 1500);
+      if (response.data) {
+        await AsyncStorage.setItem("signupGender", formData.gender);
+        navigation.navigate("SignIn");
+      }
     } catch (error) {
-      const msg =
-        error?.response?.data?.message ||
-        "Registration failed. Please try again.";
-      setApiMessage(msg);
+      setApiMessage(error.response?.data?.message || "Sign up failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      className="relative flex justify-end items-start pt-5 px-4 sm:px-6 font-[Inter] min-h-screen"
-      style={{
-        backgroundImage: `url(${BackgroundSignIn})`,
-        backgroundSize: "cover",
-        backgroundPosition: "calc(50% - 88px) center",
-        backgroundRepeat: "no-repeat",
-      }}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {/* Black overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-black"></div>
+      <ImageBackground
+        source={require("../assets/SignIn/BackgroundSignIn.jpg")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay} />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.signUpBox}>
+            <Text style={styles.title}>Sign Up</Text>
 
-      {/* Card */}
-      <div className="relative z-10 bg-white shadow-2xl rounded-2xl p-6 sm:p-8 w-full max-w-md mr-4 sm:mr-12 lg:mr-20">
-        <h2 className="text-center text-2xl font-semibold mb-4">
-          <span className="text-black">Find Your Perfect </span>
-          <span className="text-orange-500">Life Partner</span>
-        </h2>
+            {apiMessage && (
+              <View style={styles.messageContainer}>
+                <Text style={styles.messageText}>{apiMessage}</Text>
+              </View>
+            )}
 
-        {apiMessage && (
-          <p
-            className={`text-center text-sm font-medium mb-3 ${
-              apiMessage.includes("Successful")
-                ? "text-green-600"
-                : "text-red-600"
-            }`}
-          >
-            {apiMessage}
-          </p>
-        )}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Profile For:</Text>
+              <View style={styles.radioGroup}>
+                <TouchableOpacity
+                  style={[styles.radioOption, formData.profileFor === "SELF" && styles.radioSelected]}
+                  onPress={() => handleChange("profileFor", "SELF")}
+                >
+                  <Text style={styles.radioText}>Self</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.radioOption, formData.profileFor === "SON" && styles.radioSelected]}
+                  onPress={() => handleChange("profileFor", "SON")}
+                >
+                  <Text style={styles.radioText}>Son</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.radioOption, formData.profileFor === "DAUGHTER" && styles.radioSelected]}
+                  onPress={() => handleChange("profileFor", "DAUGHTER")}
+                >
+                  <Text style={styles.radioText}>Daughter</Text>
+                </TouchableOpacity>
+              </View>
+              {errors.profileFor && <Text style={styles.errorText}>{errors.profileFor}</Text>}
+            </View>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
-          {/* Profile For */}
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              Profile For <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="profileFor"
-              value={formData.profileFor}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 ${
-                errors.profileFor
-                  ? "border-red-500 focus:ring-red-400"
-                  : "border-gray-300 focus:ring-orange-400"
-              }`}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Gender:</Text>
+              <View style={styles.radioGroup}>
+                <TouchableOpacity
+                  style={[styles.radioOption, formData.gender === "MALE" && styles.radioSelected]}
+                  onPress={() => handleChange("gender", "MALE")}
+                >
+                  <Text style={styles.radioText}>Male</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.radioOption, formData.gender === "FEMALE" && styles.radioSelected]}
+                  onPress={() => handleChange("gender", "FEMALE")}
+                >
+                  <Text style={styles.radioText}>Female</Text>
+                </TouchableOpacity>
+              </View>
+              {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email:</Text>
+              <TextInput
+                style={[styles.input, errors.email && styles.inputError]}
+                placeholder="email@example.com"
+                placeholderTextColor="#9CA3AF"
+                value={formData.email}
+                onChangeText={(value) => handleChange("email", value)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Phone:</Text>
+              <TextInput
+                style={[styles.input, errors.phone && styles.inputError]}
+                placeholder="Phone number"
+                placeholderTextColor="#9CA3AF"
+                value={formData.phone}
+                onChangeText={(value) => handleChange("phone", value)}
+                keyboardType="phone-pad"
+              />
+              {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Password:</Text>
+              <TextInput
+                style={[styles.input, errors.password && styles.inputError]}
+                placeholder="Password"
+                placeholderTextColor="#9CA3AF"
+                value={formData.password}
+                onChangeText={(value) => handleChange("password", value)}
+                secureTextEntry
+              />
+              {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+            </View>
+
+            <TouchableOpacity
+              style={[styles.signUpButton, loading && styles.signUpButtonDisabled]}
+              onPress={handleSignUp}
+              disabled={loading}
             >
-              <option value="">Select</option>
-              <option value="Son">Son</option>
-              <option value="Daughter">Daughter</option>
-              <option value="Sister">Sister</option>
-              <option value="Relative/Friend">Relative/Friend</option>
-              <option value="Client-Marriage Bureau">
-                Client-Marriage Bureau
-              </option>
-            </select>
-            {errors.profileFor && (
-              <p className="text-xs text-red-500 mt-1">{errors.profileFor}</p>
-            )}
-          </div>
+              {loading ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : (
+                <Text style={styles.signUpButtonText}>Sign Up</Text>
+              )}
+            </TouchableOpacity>
 
-          {/* Gender */}
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              Gender <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 ${
-                errors.gender
-                  ? "border-red-500 focus:ring-red-400"
-                  : "border-gray-300 focus:ring-orange-400"
-              }`}
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SignIn")}
+              style={styles.signInLink}
             >
-              <option value="">Select</option>
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-            </select>
-            {errors.gender && (
-              <p className="text-xs text-red-500 mt-1">{errors.gender}</p>
-            )}
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              Email Address <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="email@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 ${
-                errors.email
-                  ? "border-red-500 focus:ring-red-400"
-                  : "border-gray-300 focus:ring-orange-400"
-              }`}
-            />
-            {errors.email && (
-              <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-            )}
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              Mobile Number <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              placeholder="0000000000"
-              value={formData.phone}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 ${
-                errors.phone
-                  ? "border-red-500 focus:ring-red-400"
-                  : "border-gray-300 focus:ring-orange-400"
-              }`}
-            />
-            {errors.phone && (
-              <p className="text-xs text-red-500 mt-1">{errors.phone}</p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              Password <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter a password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 ${
-                errors.password
-                  ? "border-red-500 focus:ring-red-400"
-                  : "border-gray-300 focus:ring-orange-400"
-              }`}
-            />
-            {errors.password && (
-              <p className="text-xs text-red-500 mt-1">{errors.password}</p>
-            )}
-          </div>
-
-          <p className="text-xs text-gray-500 text-center mt-1 leading-relaxed">
-            *By registering, I agree to the Terms & Conditions and Privacy
-            Policy.
-          </p>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full ${
-              loading
-                ? "bg-orange-400 cursor-not-allowed"
-                : "bg-orange-500 hover:bg-orange-600"
-            } text-white py-2 rounded-md font-medium transition-all duration-300 mt-1 text-sm`}
-          >
-            {loading ? "Registering..." : "Register"}
-          </button>
-        </form>
-
-        <p className="text-center text-xs text-gray-600 mt-3">
-          Already have an account?{" "}
-          <Link
-            to="/signin"
-            className="text-orange-500 hover:text-orange-600 font-medium"
-          >
-            Sign In
-          </Link>
-        </p>
-      </div>
-    </div>
+              <Text style={styles.signInLinkText}>Already have an account? Sign In</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </ImageBackground>
+    </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
+  signUpBox: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 24,
+    width: "100%",
+    maxWidth: 400,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  title: {
+    textAlign: "center",
+    fontSize: 28,
+    fontWeight: "600",
+    color: "#F97316",
+    marginBottom: 24,
+  },
+  messageContainer: {
+    backgroundColor: "#FEF2F2",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  messageText: {
+    textAlign: "center",
+    color: "#DC2626",
+    fontSize: 14,
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#374151",
+    marginBottom: 8,
+  },
+  radioGroup: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  radioOption: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  radioSelected: {
+    backgroundColor: "#F97316",
+    borderColor: "#F97316",
+  },
+  radioText: {
+    fontSize: 14,
+    color: "#374151",
+  },
+  input: {
+    width: "100%",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    borderRadius: 8,
+    fontSize: 14,
+    color: "#111827",
+  },
+  inputError: {
+    borderColor: "#DC2626",
+  },
+  errorText: {
+    color: "#DC2626",
+    fontSize: 12,
+    marginTop: 4,
+  },
+  signUpButton: {
+    width: "100%",
+    backgroundColor: "#F97316",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  signUpButtonDisabled: {
+    backgroundColor: "#FB923C",
+  },
+  signUpButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  signInLink: {
+    marginTop: 16,
+    alignItems: "center",
+  },
+  signInLinkText: {
+    color: "#F97316",
+    fontSize: 14,
+  },
+});
 
 export default SignUp;

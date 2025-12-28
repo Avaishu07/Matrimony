@@ -1,129 +1,223 @@
 import React from "react";
-import { FaInstagram, FaTwitter, FaFacebookF } from "react-icons/fa";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Linking } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useNavigation } from "@react-navigation/native";
 
 const Footer = () => {
-  return (
-    <footer className="bg-[#2b2b2b] text-gray-300 py-12 px-6 lg:px-16">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+  const navigation = useNavigation();
 
+  const quickLinks = [
+    { label: "Home", screen: "Home" },
+    { label: "About Us", screen: "Home" },
+    { label: "Success Stories", screen: "SuccessStories" },
+    { label: "Membership Plans", screen: "Plans" },
+    { label: "Privacy Policy", screen: "Home" },
+    { label: "Terms & Conditions", screen: "Home" },
+    { label: "Contact Us", screen: "Contact" },
+    { label: "FAQs", screen: "Home" },
+  ];
+
+  const communities = [
+    "Hindu Matrimony",
+    "Christian Matrimony",
+    "Muslim Matrimony",
+    "Sikh Matrimony",
+    "Jain Matrimony",
+    "Buddhist Matrimony",
+  ];
+
+  const handleNavigation = (screen) => {
+    navigation.navigate(screen);
+  };
+
+  const openSocialLink = (url) => {
+    Linking.openURL(url).catch((err) => console.error("Failed to open URL:", err));
+  };
+
+  return (
+    <View style={styles.footer}>
+      <ScrollView
+        horizontal={false}
+        contentContainerStyle={styles.footerContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Column 1 */}
-        <div>
-          <h2 className="text-white text-2xl font-semibold mb-4">Matrimony <span className="text-orange-500">Logo</span></h2>
-          <p className="text-sm leading-relaxed text-gray-300">
+        <View style={styles.column}>
+          <Text style={styles.logoText}>
+            Matrimony <Text style={styles.logoHighlight}>Logo</Text>
+          </Text>
+          <Text style={styles.description}>
             Welcome to India's most trusted matrimonial platform dedicated to
             helping people find their perfect life partner. With thousands of
             verified profiles and personalized matchmaking, we make your journey
             to marriage simple, secure, and successful.
-          </p>
-        </div>
+          </Text>
+        </View>
 
         {/* Column 2 - Quick Links */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">
-            QUICK LINKS
-          </h3>
-          <ul className="space-y-2 text-sm">
-            {[
-              { label: "Home", path: "/" },
-              { label: "About Us", path: "/" },
-              { label: "Success Stories", path: "/success-stories" },
-              { label: "Membership Plans", path: "/plans" },
-              { label: "Privacy Policy", path: "/" },
-              { label: "Terms & Conditions", path: "/" },
-              { label: "Contact Us", path: "/contact" },
-              { label: "FAQs", path: "/" },
-            ].map((item, index) => (
-              <li key={index} className="flex items-center">
-                {/* Bullet - NOT underlined */}
-                <span className="text-orange-400 font-bold mr-2">•</span>
-
-                {/* Text - Underlined, correct color */}
-                <a
-                  href={item.path}
-                  style={{
-                    color: "#B5B297",
-                    textDecoration: "underline",
-                  }}
-                >
-                  {item.label}
-                </a>
-              </li>
+        <View style={styles.column}>
+          <Text style={styles.columnTitle}>QUICK LINKS</Text>
+          <View style={styles.linksList}>
+            {quickLinks.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.linkItem}
+                onPress={() => handleNavigation(item.screen)}
+              >
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.linkText}>{item.label}</Text>
+              </TouchableOpacity>
             ))}
-          </ul>
-
-        </div>
+          </View>
+        </View>
 
         {/* Column 3 - Explore by Community */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">
-            EXPLORE BY COMMUNITY
-          </h3>
-          <ul className="space-y-2 text-sm">
-            {[
-              "Hindu Matrimony",
-              "Christian Matrimony",
-              "Muslim Matrimony",
-              "Sikh Matrimony",
-              "Jain Matrimony",
-              "Buddhist Matrimony",
-            ].map((item, index) => (
-              <li key={index} className="flex items-center">
-                {/* Bullet - Orange */}
-                <span className="text-orange-400 font-bold mr-2">•</span>
-
-                {/* Text - NO underline */}
-                <span style={{ color: "#B5B297" }}>{item}</span>
-              </li>
+        <View style={styles.column}>
+          <Text style={styles.columnTitle}>EXPLORE BY COMMUNITY</Text>
+          <View style={styles.linksList}>
+            {communities.map((item, index) => (
+              <View key={index} style={styles.linkItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.communityText}>{item}</Text>
+              </View>
             ))}
-          </ul>
-        </div>
+          </View>
+        </View>
 
         {/* Column 4 - Social */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">
-            FOLLOW US
-          </h3>
-          <p className="text-sm mb-4 text-gray-300" style={{ color: "#B5B297" }}>
+        <View style={styles.column}>
+          <Text style={styles.columnTitle}>FOLLOW US</Text>
+          <Text style={styles.socialDescription}>
             Stay connected with us on social media for updates, wedding tips,
             and success stories.
-          </p>
-          <div className="flex space-x-4">
-            <a
-              href="#"
-              className="bg-orange-500 text-white p-3 rounded-md hover:bg-orange-600 transition"
+          </Text>
+          <View style={styles.socialIcons}>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={() => openSocialLink("https://instagram.com")}
             >
-              <FaInstagram size={18} />
-            </a>
-            <a
-              href="#"
-              className="bg-orange-500 text-white p-3 rounded-md hover:bg-orange-600 transition"
+              <Icon name="instagram" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={() => openSocialLink("https://twitter.com")}
             >
-              <FaTwitter size={18} />
-            </a>
-            <a
-              href="#"
-              className="bg-orange-500 text-white p-3 rounded-md hover:bg-orange-600 transition"
+              <Icon name="twitter" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={() => openSocialLink("https://facebook.com")}
             >
-              <FaFacebookF size={18} />
-            </a>
-          </div>
-        </div>
-      </div>
+              <Icon name="facebook" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
 
       {/* Divider */}
-      <div className="border-t border-gray-700 mt-10 pt-6 text-center">
-        <p className="text-sm text-gray-400">
-          Copyright © 
-        </p>
-        <p className="text-sm text-gray-400">
-          2025 Matrimony. All rights reserved.
-        </p>
-        <p className="text-sm text-gray-400 mt-1">
+      <View style={styles.divider}>
+        <Text style={styles.copyright}>Copyright ©</Text>
+        <Text style={styles.copyright}>2025 Matrimony. All rights reserved.</Text>
+        <Text style={styles.copyrightNote}>
           Your trusted partner in finding love and lifelong happiness.
-        </p>
-      </div>
-    </footer>
+        </Text>
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  footer: {
+    backgroundColor: "#2b2b2b",
+    paddingVertical: 48,
+    paddingHorizontal: 24,
+  },
+  footerContent: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 40,
+  },
+  column: {
+    flex: 1,
+    minWidth: 200,
+    marginBottom: 20,
+  },
+  logoText: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "600",
+    marginBottom: 16,
+  },
+  logoHighlight: {
+    color: "#F97316",
+  },
+  description: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: "#D1D5DB",
+  },
+  columnTitle: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 16,
+  },
+  linksList: {
+    gap: 8,
+  },
+  linkItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bullet: {
+    color: "#F97316",
+    fontWeight: "bold",
+    marginRight: 8,
+  },
+  linkText: {
+    color: "#B5B297",
+    fontSize: 14,
+    textDecorationLine: "underline",
+  },
+  communityText: {
+    color: "#B5B297",
+    fontSize: 14,
+  },
+  socialDescription: {
+    fontSize: 14,
+    marginBottom: 16,
+    color: "#B5B297",
+  },
+  socialIcons: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  socialButton: {
+    backgroundColor: "#F97316",
+    padding: 12,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  divider: {
+    borderTopWidth: 1,
+    borderTopColor: "#374151",
+    marginTop: 40,
+    paddingTop: 24,
+    alignItems: "center",
+  },
+  copyright: {
+    fontSize: 14,
+    color: "#9CA3AF",
+    textAlign: "center",
+  },
+  copyrightNote: {
+    fontSize: 14,
+    color: "#9CA3AF",
+    marginTop: 4,
+    textAlign: "center",
+  },
+});
 
 export default Footer;

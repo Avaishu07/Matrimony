@@ -1,38 +1,34 @@
 import React from "react";
-import {
-  useGetOwnProfileQuery,
-  useGetProfilePhotoQuery,
-} from "../../context/profileApi";
-import BiodataTemplate from "./emptyBiodata";
-import { mapOwnProfile } from "../../context/mapOwnProfile";
+import { View, Text, StyleSheet } from "react-native";
+import AppLayout from "../../components/layout/AppLayout";
 
-const toImageUrl = (fileData) =>
-  fileData ? `data:image/jpeg;base64,${fileData}` : "/default-avatar.jpg";
+const MyProfilePage = () => {
+  return (
+    <AppLayout>
+      <View style={styles.container}>
+        <Text style={styles.text}>My Profile Page</Text>
+        <Text style={styles.subtext}>This page is being converted to React Native</Text>
+      </View>
+    </AppLayout>
+  );
+};
 
-export default function MyProfilePage() {
-  const { data, isLoading, isError } = useGetOwnProfileQuery();
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  subtext: {
+    fontSize: 16,
+    color: "#666",
+  },
+});
 
-  const { data: photoResponse } = useGetProfilePhotoQuery();
-
-  if (isLoading) {
-    return (
-      <p className="text-center mt-20 text-lg text-gray-600">
-        Loading your profile...
-      </p>
-    );
-  }
-
-  if (isError || !data) {
-    return (
-      <p className="text-center mt-20 text-red-500 text-lg">
-        Failed to fetch your profile.
-      </p>
-    );
-  }
-
-  const mapped = mapOwnProfile(data);
-
-  const profilePic = toImageUrl(photoResponse?.data?.fileData);
-
-  return <BiodataTemplate data={{ ...mapped, profilePic }} />;
-}
+export default MyProfilePage;

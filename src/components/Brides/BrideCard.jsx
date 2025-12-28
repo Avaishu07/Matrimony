@@ -1,697 +1,24 @@
-// import React from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Heart } from "lucide-react";
-// import { useAuth } from "../../context/AuthContext";
-
-// const BrideCard = ({ profile }) => {
-//   const navigate = useNavigate();
-//   const { isLoggedIn } = useAuth();
-
-//   if (!profile) return null;
-
-//   const {
-//     userProfileId,
-//     firstName,
-//     age,
-//     religion,
-//     caste,
-//     height,
-//     complexion,
-//     currentCity,
-//     maritalStatus,
-//   } = profile;
-
-//   // Height: cm → ft/in
-//   const heightInInches = height ? height / 2.54 : 0;
-//   const ft = Math.floor(heightInInches / 12);
-//   const inches = Math.round(heightInInches % 12);
-//   const heightText = height ? `${ft}'${inches}"` : "";
-
-//   return (
-//     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 w-full max-w-3xl mx-auto">
-
-//       {/* IMAGE */}
-//       <div className="relative md:w-1/3 w-full">
-//         <img
-//           src="/default-avatar.jpg"
-//           alt={firstName}
-//           className="w-full h-60 object-cover"
-//         />
-//       </div>
-
-//       {/* DETAILS */}
-//       <div className="p-4 px-8 flex-1">
-
-//         {/* NAME + HEART + ID */}
-//         <div className="flex justify-between items-center">
-//           <h3 className="text-lg font-semibold text-gray-800">
-//             {firstName || "Profile"}
-//           </h3>
-
-//           {isLoggedIn && (
-//             <div className="flex items-center space-x-2">
-//               <button
-//                 className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-md transition-all"
-//                 title="Add to favorites"
-//               >
-//                 <Heart size={18} fill="white" />
-//               </button>
-
-//               <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-md text-xs font-semibold">
-//                 ID: {userProfileId}
-//               </span>
-//             </div>
-//           )}
-//         </div>
-
-//         {/* INFO */}
-//         <ul className="mt-2 text-gray-700 text-sm space-y-0.5">
-//           {age && (
-//             <li>
-//               <strong>Age:</strong> {age} Yrs
-//             </li>
-//           )}
-
-//           {heightText && (
-//             <li>
-//               <strong>Height:</strong> {heightText}
-//             </li>
-//           )}
-
-//           {religion && (
-//             <li>
-//               <strong>Religion:</strong> {religion}
-//             </li>
-//           )}
-
-//           {caste && (
-//             <li>
-//               <strong>Caste:</strong> {caste}
-//             </li>
-//           )}
-
-//           {complexion && (
-//             <li>
-//               <strong>Complexion:</strong> {complexion}
-//             </li>
-//           )}
-
-//           {currentCity && (
-//             <li>
-//               <strong>Res. City:</strong> {currentCity}
-//             </li>
-//           )}
-
-//           {maritalStatus && (
-//             <li>
-//               <strong>Marital Status:</strong> {maritalStatus}
-//             </li>
-//           )}
-//         </ul>
-
-//         {/* VIEW PROFILE BUTTON */}
-//         <button
-//           onClick={() =>
-//             navigate("/OthersEmptyBiodataPage", {
-//               state: { userProfileId },
-//             })
-//           }
-//           className="mt-3 bg-orange-500 text-white text-sm px-4 py-1.5 rounded-md hover:bg-orange-600 transition"
-//         >
-//           View Profile
-//         </button>
-
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BrideCard;
-
-
-
-
-
-
-
-
-
-// import React from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Heart } from "lucide-react";
-// import { useAuth } from "../../context/AuthContext";
-
-// const BrideCard = ({ profile }) => {
-//   const navigate = useNavigate();
-//   const { isLoggedIn } = useAuth();
-
-//   if (!profile) return null;
-
-//   const {
-//     userProfileId,
-//     firstName,
-//     age,
-//     religion,
-//     caste,
-//     height,
-//     complexion,
-//     currentCity,
-//     maritalStatus,
-//   } = profile;
-
-//   // Height: cm → ft/in
-//   const heightInInches = height ? height / 2.54 : 0;
-//   const ft = Math.floor(heightInInches / 12);
-//   const inches = Math.round(heightInInches % 12);
-//   const heightText = height ? `${ft}'${inches}"` : "";
-
-//   return (
-//     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden w-full max-w-3xl mx-auto">
-
-//       {/* IMAGE */}
-//       <div className="md:w-1/3 w-full">
-//         <img
-//           src="/default-avatar.jpg"
-//           alt={firstName}
-//           className="w-full h-60 object-cover"
-//         />
-//       </div>
-
-//       {/* DETAILS */}
-//       <div className="p-4 px-8 flex-1">
-//         <div className="flex justify-between items-center">
-//           <h3 className="text-lg font-semibold">
-//             {firstName || "Profile"}
-//           </h3>
-
-//           {isLoggedIn && (
-//             <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-md text-xs font-semibold">
-//               ID: {userProfileId}
-//             </span>
-//           )}
-//         </div>
-
-//         <ul className="mt-2 text-sm text-gray-700 space-y-1">
-//           {age && <li><strong>Age:</strong> {age}</li>}
-//           {heightText && <li><strong>Height:</strong> {heightText}</li>}
-//           {religion && <li><strong>Religion:</strong> {religion}</li>}
-//           {caste && <li><strong>Caste:</strong> {caste}</li>}
-//           {complexion && <li><strong>Complexion:</strong> {complexion}</li>}
-//           {currentCity && <li><strong>City:</strong> {currentCity}</li>}
-//           {maritalStatus && <li><strong>Status:</strong> {maritalStatus}</li>}
-//         </ul>
-
-//         <button
-//           onClick={() =>
-//             navigate("/OthersEmptyBiodataPage", {
-//               state: { userId: userProfileId },
-//             })
-//           }
-//           className="mt-3 bg-orange-500 text-white px-4 py-1.5 rounded-md"
-//         >
-//           View Profile
-//         </button>
-
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BrideCard;
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Heart } from "lucide-react";
-// import { useAuth } from "../../context/AuthContext";
-// import { useAddToFavoriteMutation } from "../../context/profileApi";
-
-// const BrideCard = ({ profile }) => {
-//   const navigate = useNavigate();
-//   const { isLoggedIn } = useAuth();
-
-//   const [addToFavorite, { isLoading }] = useAddToFavoriteMutation();
-//   const [isFavorited, setIsFavorited] = useState(false);
-
-//   if (!profile) return null;
-
-//   const {
-//     userProfileId,
-//     firstName,
-//     age,
-//     religion,
-//     caste,
-//     height,
-//     complexion,
-//     currentCity,
-//     maritalStatus,
-//   } = profile;
-
-//   const fullName = firstName || "Profile";
-
-//   // Height: cm → ft/in
-//   const heightInInches = height ? height / 2.54 : 0;
-//   const ft = Math.floor(heightInInches / 12);
-//   const inches = Math.round(heightInInches % 12);
-//   const heightText = height ? `${ft}'${inches}"` : "";
-
-//   /* FAVORITE HANDLER (SAME AS GROOMCARD) */
-//   const handleFavorite = async () => {
-//     if (!isLoggedIn) {
-//       navigate("/signin");
-//       return;
-//     }
-
-//     try {
-//       await addToFavorite(userProfileId).unwrap();
-//       setIsFavorited(true);
-//     } catch (error) {
-//       console.error("Add to favorite failed", error);
-//       alert(error?.data?.message || "Failed to add to favorites");
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 w-full max-w-3xl mx-auto">
-
-//       {/* IMAGE */}
-//       <div className="relative md:w-1/3 w-full">
-//         <img
-//           src="/default-avatar.jpg"
-//           alt={fullName}
-//           className="w-full h-60 object-cover"
-//         />
-//       </div>
-
-//       {/* DETAILS */}
-//       <div className="p-4 px-8 flex-1">
-//         <div className="flex justify-between items-center">
-//           <h3 className="text-lg font-semibold text-gray-800">
-//             {fullName}
-//           </h3>
-
-//           {isLoggedIn && (
-//             <div className="flex items-center space-x-2">
-//               {/* FAVORITE BUTTON */}
-//               <button
-//                 onClick={handleFavorite}
-//                 disabled={isFavorited || isLoading}
-//                 title={isFavorited ? "Added to Favorites" : "Add to Favorites"}
-//                 className={`p-2 rounded-full shadow-md transition-all
-//                   ${
-//                     isFavorited
-//                       ? "bg-gray-300 cursor-not-allowed"
-//                       : "bg-red-500 hover:bg-red-600 text-white"
-//                   }`}
-//               >
-//                 <Heart
-//                   size={18}
-//                   fill={isFavorited ? "gray" : "white"}
-//                 />
-//               </button>
-
-//               <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-md text-xs font-semibold">
-//                 ID: {userProfileId}
-//               </span>
-//             </div>
-//           )}
-//         </div>
-
-//         <ul className="mt-2 text-gray-700 text-sm space-y-0.5">
-//           {age && <li><strong>Age:</strong> {age} Yrs</li>}
-//           {religion && <li><strong>Religion:</strong> {religion}</li>}
-//           {caste && <li><strong>Caste:</strong> {caste}</li>}
-//           {complexion && <li><strong>Complexion:</strong> {complexion}</li>}
-//           {heightText && <li><strong>Height:</strong> {heightText}</li>}
-//           {currentCity && <li><strong>City:</strong> {currentCity}</li>}
-//           {maritalStatus && (
-//             <li><strong>Marital Status:</strong> {maritalStatus}</li>
-//           )}
-//         </ul>
-
-//         {/* SAME NAVIGATION AS GROOMCARD */}
-//         <button
-//           onClick={() =>
-//             navigate(
-//               isLoggedIn
-//                 ? "/OthersEmptyBiodataPage"
-//                 : "/PublicBiodataPage",
-//               { state: { profileId: userProfileId } }
-//             )
-//           }
-//           className="mt-3 bg-orange-500 text-white text-sm px-4 py-1.5 rounded-md hover:bg-orange-600 transition"
-//         >
-//           View Profile
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BrideCard;
-
-
-
-
-
-
-
-
-// import React, { useState, useMemo } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Heart } from "lucide-react";
-// import { useAuth } from "../../context/AuthContext";
-// import { useAddToFavoriteMutation } from "../../context/profileApi";
-
-// const BrideCard = ({ profile }) => {
-//   const navigate = useNavigate();
-//   const { isLoggedIn } = useAuth();
-
-//   const [addToFavorite, { isLoading }] = useAddToFavoriteMutation();
-//   const [isFavorited, setIsFavorited] = useState(false);
-
-//   if (!profile) return null;
-
-//   const {
-//     userProfileId,
-//     firstName,
-//     age,
-//     religion,
-//     caste,
-//     height,
-//     complexion,
-//     currentCity,
-//     maritalStatus,
-//     profilePhotoBase64,
-//     profilePhotoContentType,
-//     hasProfilePhoto,
-//   } = profile;
-
-//   const fullName = firstName || "Profile";
-
-//   // Height: cm → ft/in
-//   const heightInInches = height ? height / 2.54 : 0;
-//   const ft = Math.floor(heightInInches / 12);
-//   const inches = Math.round(heightInInches % 12);
-//   const heightText = height ? `${ft}'${inches}"` : "";
-
-//   // ✅ BASE64 IMAGE URL
-//   const imageSrc = useMemo(() => {
-//     if (hasProfilePhoto && profilePhotoBase64 && profilePhotoContentType) {
-//       return `data:${profilePhotoContentType};base64,${profilePhotoBase64}`;
-//     }
-//     return "/default-avatar.jpg";
-//   }, [hasProfilePhoto, profilePhotoBase64, profilePhotoContentType]);
-
-//   /* FAVORITE HANDLER */
-//   const handleFavorite = async () => {
-//     if (!isLoggedIn) {
-//       navigate("/signin");
-//       return;
-//     }
-
-//     try {
-//       await addToFavorite(userProfileId).unwrap();
-//       setIsFavorited(true);
-//     } catch (error) {
-//       console.error("Add to favorite failed", error);
-//       alert(error?.data?.message || "Failed to add to favorites");
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 w-full max-w-3xl mx-auto">
-
-//       {/* IMAGE */}
-//       <div className="relative md:w-1/3 w-full">
-//         <img
-//           src={imageSrc}
-//           alt={fullName}
-//           className="w-full h-60 object-cover"
-//         />
-//       </div>
-
-//       {/* DETAILS */}
-//       <div className="p-4 px-8 flex-1">
-//         <div className="flex justify-between items-center">
-//           <h3 className="text-lg font-semibold text-gray-800">
-//             {fullName}
-//           </h3>
-
-//           {isLoggedIn && (
-//             <div className="flex items-center space-x-2">
-//               <button
-//                 onClick={handleFavorite}
-//                 disabled={isFavorited || isLoading}
-//                 title={isFavorited ? "Added to Favorites" : "Add to Favorites"}
-//                 className={`p-2 rounded-full shadow-md transition-all
-//                   ${
-//                     isFavorited
-//                       ? "bg-gray-300 cursor-not-allowed"
-//                       : "bg-red-500 hover:bg-red-600 text-white"
-//                   }`}
-//               >
-//                 <Heart size={18} fill={isFavorited ? "gray" : "white"} />
-//               </button>
-
-//               <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-md text-xs font-semibold">
-//                 ID: {userProfileId}
-//               </span>
-//             </div>
-//           )}
-//         </div>
-
-//         <ul className="mt-2 text-gray-700 text-sm space-y-0.5">
-//           {age && <li><strong>Age:</strong> {age} Yrs</li>}
-//           {religion && <li><strong>Religion:</strong> {religion}</li>}
-//           {caste && <li><strong>Caste:</strong> {caste}</li>}
-//           {complexion && <li><strong>Complexion:</strong> {complexion}</li>}
-//           {heightText && <li><strong>Height:</strong> {heightText}</li>}
-//           {currentCity && <li><strong>City:</strong> {currentCity}</li>}
-//           {maritalStatus && (
-//             <li><strong>Marital Status:</strong> {maritalStatus}</li>
-//           )}
-//         </ul>
-
-//         <button
-//           onClick={() =>
-//             navigate(
-//               isLoggedIn
-//                 ? "/OthersEmptyBiodataPage"
-//                 : "/PublicBiodataPage",
-//               { state: { profileId: userProfileId } }
-//             )
-//           }
-//           className="mt-3 bg-orange-500 text-white text-sm px-4 py-1.5 rounded-md hover:bg-orange-600 transition"
-//         >
-//           View Profile
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BrideCard;
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState, useMemo } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Heart } from "lucide-react";
-// import { useAuth } from "../../context/AuthContext";
-// import { useAddToFavoriteMutation } from "../../context/profileApi";
-// import defaultProfileImg from "../../assets/DefaultImage/AvtarImg.avif"; 
-
-// const BrideCard = ({ profile }) => {
-//   const navigate = useNavigate();
-//   const { isLoggedIn } = useAuth();
-
-//   const [addToFavorite, { isLoading }] = useAddToFavoriteMutation();
-//   const [isFavorited, setIsFavorited] = useState(false);
-
-//   if (!profile) return null;
-
-//   const {
-//     userProfileId,
-//     firstName,
-//     age,
-//     religion,
-//     caste,
-//     height,
-//     complexion,
-//     currentCity,
-//     maritalStatus,
-//     profilePhotoBase64,
-//     profilePhotoContentType,
-//     hasProfilePhoto,
-//   } = profile;
-
-//   const fullName = firstName || "Profile";
-
-//   // Height: cm → ft/in
-//   const heightInInches = height ? height / 2.54 : 0;
-//   const ft = Math.floor(heightInInches / 12);
-//   const inches = Math.round(heightInInches % 12);
-//   const heightText = height ? `${ft}'${inches}"` : "";
-
-//   // SAFE IMAGE RESOLUTION (NO LOOP, NO RERENDER)
-//   const imageSrc = useMemo(() => {
-//     if (
-//       hasProfilePhoto === true &&
-//       profilePhotoBase64 &&
-//       profilePhotoContentType
-//     ) {
-//       return `data:${profilePhotoContentType};base64,${profilePhotoBase64}`;
-//     }
-//     return defaultProfileImg;
-//   }, [hasProfilePhoto, profilePhotoBase64, profilePhotoContentType]);
-
-//   /* FAVORITE HANDLER */
-//   const handleFavorite = async () => {
-//     if (!isLoggedIn) {
-//       navigate("/signin");
-//       return;
-//     }
-
-//     try {
-//       await addToFavorite(userProfileId).unwrap();
-//       setIsFavorited(true);
-//     } catch (error) {
-//       console.error("Add to favorite failed", error);
-//       alert(error?.data?.message || "Failed to add to favorites");
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 w-full max-w-3xl mx-auto">
-
-//       {/* IMAGE (DEPLOYMENT SAFE) */}
-//       <div className="relative md:w-1/3 w-full">
-//         <img
-//           src={imageSrc}
-//           alt={fullName}
-//           className="w-full h-60 object-cover"
-//           loading="lazy"
-//           onError={(e) => {
-//             // CRITICAL: stop infinite retry
-//             e.currentTarget.onerror = null;
-//             e.currentTarget.src = defaultProfileImg;
-//           }}
-//         />
-//       </div>
-
-//       {/* DETAILS */}
-//       <div className="p-4 px-8 flex-1">
-//         <div className="flex justify-between items-center">
-//           <h3 className="text-lg font-semibold text-gray-800">
-//             {fullName}
-//           </h3>
-
-//           {isLoggedIn && (
-//             <div className="flex items-center space-x-2">
-//               <button
-//                 onClick={handleFavorite}
-//                 disabled={isFavorited || isLoading}
-//                 title={isFavorited ? "Added to Favorites" : "Add to Favorites"}
-//                 className={`p-2 rounded-full shadow-md transition-all
-//                   ${
-//                     isFavorited
-//                       ? "bg-gray-300 cursor-not-allowed"
-//                       : "bg-red-500 hover:bg-red-600 text-white"
-//                   }`}
-//               >
-//                 <Heart size={18} fill={isFavorited ? "gray" : "white"} />
-//               </button>
-
-//               <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-md text-xs font-semibold">
-//                 ID: {userProfileId}
-//               </span>
-//             </div>
-//           )}
-//         </div>
-
-//         <ul className="mt-2 text-gray-700 text-sm space-y-0.5">
-//           {age && <li><strong>Age:</strong> {age} Yrs</li>}
-//           {religion && <li><strong>Religion:</strong> {religion}</li>}
-//           {caste && <li><strong>Caste:</strong> {caste}</li>}
-//           {complexion && <li><strong>Complexion:</strong> {complexion}</li>}
-//           {heightText && <li><strong>Height:</strong> {heightText}</li>}
-//           {currentCity && <li><strong>City:</strong> {currentCity}</li>}
-//           {maritalStatus && (
-//             <li><strong>Marital Status:</strong> {maritalStatus}</li>
-//           )}
-//         </ul>
-
-//         <button
-//           onClick={() =>
-//             navigate(
-//               isLoggedIn
-//                 ? "/OthersEmptyBiodataPage"
-//                 : "/PublicBiodataPage",
-//               { state: { profileId: userProfileId } }
-//             )
-//           }
-//           className="mt-3 bg-orange-500 text-white text-sm px-4 py-1.5 rounded-md hover:bg-orange-600 transition"
-//         >
-//           View Profile
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BrideCard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { Heart } from "lucide-react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Feather";
 import { useAuth } from "../../context/AuthContext";
 import { useAddToFavoriteMutation } from "../../context/profileApi";
-import defaultProfileImg from "../../assets/DefaultImage/AvtarImg.avif";
 
 const BrideCard = ({ profile }) => {
-  const navigate = useNavigate();
+  const navigation = useNavigation();
   const { isLoggedIn } = useAuth();
 
   const [addToFavorite, { isLoading }] = useAddToFavoriteMutation();
   const [isFavorited, setIsFavorited] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   if (!profile) return null;
 
@@ -718,22 +45,25 @@ const BrideCard = ({ profile }) => {
   const inches = Math.round(heightInInches % 12);
   const heightText = height ? `${ft}'${inches}"` : "";
 
-  /* ✅ SAFE IMAGE RESOLUTION */
-  const imageSrc = useMemo(() => {
+  /* IMAGE SOURCE */
+  const imageSource = useMemo(() => {
     if (
       hasProfilePhoto === true &&
       profilePhotoBase64 &&
-      profilePhotoContentType
+      profilePhotoContentType &&
+      !imageError
     ) {
-      return `data:${profilePhotoContentType};base64,${profilePhotoBase64}`;
+      return {
+        uri: `data:${profilePhotoContentType};base64,${profilePhotoBase64}`,
+      };
     }
-    return defaultProfileImg;
-  }, [hasProfilePhoto, profilePhotoBase64, profilePhotoContentType]);
+    return require("../../assets/Bride/Img1.webp");
+  }, [hasProfilePhoto, profilePhotoBase64, profilePhotoContentType, imageError]);
 
   /* FAVORITE HANDLER */
   const handleFavorite = async () => {
     if (!isLoggedIn) {
-      navigate("/signin");
+      navigation.navigate("SignIn");
       return;
     }
 
@@ -742,87 +72,183 @@ const BrideCard = ({ profile }) => {
       setIsFavorited(true);
     } catch (error) {
       console.error("Add to favorite failed", error);
-      alert(error?.data?.message || "Failed to add to favorites");
+      Alert.alert("Error", error?.data?.message || "Failed to add to favorites");
     }
   };
 
-  return (
-    <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 w-full max-w-3xl mx-auto">
+  const handleViewProfile = () => {
+    navigation.navigate(
+      isLoggedIn ? "OthersEmptyBiodataPage" : "PublicBiodataPage",
+      { userProfileId }
+    );
+  };
 
-      {/* ✅ IMAGE */}
-      <div className="relative md:w-1/3 w-full">
-        <img
-          src={imageSrc}
-          alt={fullName}
-          className="w-full h-60 object-cover"
-          loading="lazy"
-          onError={(e) => {
-            // 🔒 STOP INFINITE RETRY
-            e.currentTarget.onerror = null;
-            e.currentTarget.src = defaultProfileImg;
-          }}
+  const profileDetails = [
+    age && { label: "Age", value: `${age} Yrs` },
+    religion && { label: "Religion", value: religion },
+    caste && { label: "Caste", value: caste },
+    complexion && { label: "Complexion", value: complexion },
+    heightText && { label: "Height", value: heightText },
+    currentCity && { label: "City", value: currentCity },
+    maritalStatus && { label: "Marital Status", value: maritalStatus },
+  ].filter(Boolean);
+
+  return (
+    <View style={styles.container}>
+      {/* IMAGE */}
+      <View style={styles.imageContainer}>
+        <Image
+          source={imageSource}
+          style={styles.image}
+          resizeMode="cover"
+          onError={() => setImageError(true)}
         />
-      </div>
+      </View>
 
       {/* DETAILS */}
-      <div className="p-4 px-8 flex-1">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-800">
-            {fullName}
-          </h3>
+      <View style={styles.detailsContainer}>
+        <View style={styles.headerRow}>
+          <Text style={styles.name}>{fullName}</Text>
 
           {isLoggedIn && (
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={handleFavorite}
+            <View style={styles.headerActions}>
+              <TouchableOpacity
+                onPress={handleFavorite}
                 disabled={isFavorited || isLoading}
-                title={isFavorited ? "Added to Favorites" : "Add to Favorites"}
-                className={`p-2 rounded-full shadow-md transition-all
-                  ${
-                    isFavorited
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-red-500 hover:bg-red-600 text-white"
-                  }`}
+                style={[
+                  styles.favoriteButton,
+                  isFavorited && styles.favoriteButtonDisabled,
+                ]}
               >
-                <Heart size={18} fill={isFavorited ? "gray" : "white"} />
-              </button>
+                <Icon
+                  name="heart"
+                  size={18}
+                  color={isFavorited ? "#9CA3AF" : "#FFFFFF"}
+                  solid={isFavorited}
+                />
+              </TouchableOpacity>
 
-              <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-md text-xs font-semibold">
-                ID: {userProfileId}
-              </span>
-            </div>
+              <View style={styles.idBadge}>
+                <Text style={styles.idText}>ID: {userProfileId}</Text>
+              </View>
+            </View>
           )}
-        </div>
+        </View>
 
-        <ul className="mt-2 text-gray-700 text-sm space-y-0.5">
-          {age && <li><strong>Age:</strong> {age} Yrs</li>}
-          {religion && <li><strong>Religion:</strong> {religion}</li>}
-          {caste && <li><strong>Caste:</strong> {caste}</li>}
-          {complexion && <li><strong>Complexion:</strong> {complexion}</li>}
-          {heightText && <li><strong>Height:</strong> {heightText}</li>}
-          {currentCity && <li><strong>City:</strong> {currentCity}</li>}
-          {maritalStatus && (
-            <li><strong>Marital Status:</strong> {maritalStatus}</li>
-          )}
-        </ul>
+        {/* PROFILE DETAILS */}
+        <View style={styles.detailsList}>
+          {profileDetails.map((detail, index) => (
+            <Text key={index} style={styles.detailItem}>
+              <Text style={styles.detailLabel}>{detail.label}:</Text> {detail.value}
+            </Text>
+          ))}
+        </View>
 
-        {/* ✅ FIXED NAVIGATION (SAME AS GROOMCARD) */}
-        <button
-          onClick={() =>
-            navigate(
-              isLoggedIn
-                ? "/OthersEmptyBiodataPage"
-                : "/PublicBiodataPage",
-              { state: { userProfileId } }   // 🔑 FIX HERE
-            )
-          }
-          className="mt-3 bg-orange-500 text-white text-sm px-4 py-1.5 rounded-md hover:bg-orange-600 transition"
+        {/* VIEW PROFILE BUTTON */}
+        <TouchableOpacity
+          style={styles.viewProfileButton}
+          onPress={handleViewProfile}
         >
-          View Profile
-        </button>
-      </div>
-    </div>
+          <Text style={styles.viewProfileButtonText}>View Profile</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
+    overflow: "hidden",
+    width: "100%",
+    maxWidth: 768,
+    alignSelf: "center",
+    marginBottom: 24,
+  },
+  imageContainer: {
+    width: "33.33%",
+  },
+  image: {
+    width: "100%",
+    height: 240,
+  },
+  detailsContainer: {
+    padding: 16,
+    paddingHorizontal: 32,
+    flex: 1,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1F2937",
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  favoriteButton: {
+    backgroundColor: "#EF4444",
+    padding: 8,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  favoriteButtonDisabled: {
+    backgroundColor: "#D1D5DB",
+  },
+  idBadge: {
+    backgroundColor: "#FEE2E2",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  idText: {
+    color: "#DC2626",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  detailsList: {
+    marginTop: 8,
+    gap: 2,
+  },
+  detailItem: {
+    fontSize: 14,
+    color: "#374151",
+    lineHeight: 20,
+  },
+  detailLabel: {
+    fontWeight: "600",
+  },
+  viewProfileButton: {
+    marginTop: 12,
+    backgroundColor: "#F97316",
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    alignSelf: "flex-start",
+  },
+  viewProfileButtonText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+});
 
 export default BrideCard;

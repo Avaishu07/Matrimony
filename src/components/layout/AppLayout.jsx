@@ -1,20 +1,31 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-
+import { View, StyleSheet, ScrollView } from "react-native";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-const AppLayout = () => {
+const AppLayout = ({ children }) => {
   return (
-    <div className="flex min-h-screen flex-col bg-white text-gray-900">
+    <View style={styles.container}>
       <Navbar />
-      <main className="flex-1">
-        <Outlet />
-      </main>
+      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
+        {children}
+      </ScrollView>
       <Footer />
-    </div>
+    </View>
   );
 };
 
-export default AppLayout;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  content: {
+    flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
+  },
+});
 
+export default AppLayout;

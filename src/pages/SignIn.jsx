@@ -1,10 +1,21 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import BackgroundSignIn from "../assets/SignIn/BackgroundSignIn.jpg";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+  ActivityIndicator,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 
 const SignIn = () => {
-  const navigate = useNavigate();
+  const navigation = useNavigation();
   const { login } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -15,14 +26,12 @@ const SignIn = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (name, value) => {
+    setFormData({ ...formData, [name]: value });
     if (errorMessage) setErrorMessage("");
   };
 
-  const handleSignIn = async (e) => {
-    e.preventDefault();
-
+  const handleSignIn = async () => {
     if (!formData.email || !formData.password) {
       setErrorMessage("Please fill all fields.");
       return;
@@ -41,7 +50,7 @@ const SignIn = () => {
       const result = await login(formData.email, formData.password);
 
       if (result.success) {
-        navigate("/create-profile");
+        navigation.navigate("CreateProfile");
       } else {
         setErrorMessage(result.message);
       }
@@ -54,130 +63,223 @@ const SignIn = () => {
   };
 
   return (
-    <div
-      className="relative min-h-screen flex items-center justify-center lg:justify-end lg:items-start font-[Inter] overflow-hidden lg:pt-15 px-4 sm:px-6 py-8"
-      style={{
-        backgroundImage: `url(${BackgroundSignIn})`,
-        backgroundSize: "cover",
-        backgroundPosition: "calc(50% - 88px) center", // <-- SHIFTED LEFT BY 18PX (FINAL)
-        backgroundRepeat: "no-repeat",
-      }}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-
-      {/* BLACK GRADIENT FADE (left → right) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/70 to-black"></div>
-
-      {/* SIGN IN BOX */}
-      <div
-        className="relative z-10 bg-white shadow-2xl rounded-2xl p-6 sm:p-8 lg:p-10 w-full max-w-sm sm:max-w-md mx-auto lg:mx-16 transition-all duration-300"
-        style={{ minHeight: "470px", maxWidth: "400px" }}
+      <ImageBackground
+        source={require("../assets/SignIn/BackgroundSignIn.jpg")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
       >
-        <h2 className="text-center text-2xl sm:text-3xl font-semibold text-orange-500 mb-6">
-          Sign In
-        </h2>
+        {/* Black Gradient Overlay */}
+        <View style={styles.overlay} />
 
-        {errorMessage && (
-          <p className="text-center text-red-600 text-sm mb-3 font-medium bg-red-50 py-2 rounded-md">
-            {errorMessage}
-          </p>
-        )}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* SIGN IN BOX */}
+          <View style={styles.signInBox}>
+            <Text style={styles.title}>Sign In</Text>
 
-        <form onSubmit={handleSignIn}>
-          {/* Email */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email ID :
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="email@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all duration-300"
-              disabled={isLoading}
-            />
-          </div>
-
-          {/* Password */}
-          <div className="mb-3">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password :
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all duration-300"
-              disabled={isLoading}
-            />
-          </div>
-
-          <div className="text-right mb-3">
-            <Link
-              to="/forgot"
-              className="text-sm text-orange-500 hover:text-orange-600 transition-colors duration-300"
-            >
-              Forgot Password?
-            </Link>
-          </div>
-
-          <p className="text-xs text-gray-500 mb-5 text-center leading-snug">
-            *By signing in, I agree to the Terms & Conditions and Privacy Policy
-          </p>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full ${
-              isLoading
-                ? "bg-orange-400 cursor-not-allowed"
-                : "bg-orange-500 hover:bg-orange-600"
-            } text-white py-2.5 rounded-md transition-all duration-300 text-sm sm:text-base flex items-center justify-center`}
-          >
-            {isLoading ? (
-              <>
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Signing In...
-              </>
-            ) : (
-              "Sign In"
+            {errorMessage && (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              </View>
             )}
-          </button>
-        </form>
 
-        <div className="text-center mt-3">
-          <Link
-            to="/signup"
-            className="inline-block w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 rounded-md transition-all duration-300 text-sm sm:text-base"
-          >
-            Sign Up
-          </Link>
-        </div>
-      </div>
-    </div>
+            {/* Email */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email ID :</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="email@example.com"
+                placeholderTextColor="#9CA3AF"
+                value={formData.email}
+                onChangeText={(value) => handleChange("email", value)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!isLoading}
+              />
+            </View>
+
+            {/* Password */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Password :</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your password"
+                placeholderTextColor="#9CA3AF"
+                value={formData.password}
+                onChangeText={(value) => handleChange("password", value)}
+                secureTextEntry
+                editable={!isLoading}
+              />
+            </View>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Forgot")}
+              style={styles.forgotPasswordContainer}
+            >
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.termsText}>
+              *By signing in, I agree to the Terms & Conditions and Privacy Policy
+            </Text>
+
+            <TouchableOpacity
+              style={[styles.signInButton, isLoading && styles.signInButtonDisabled]}
+              onPress={handleSignIn}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                  <Text style={styles.signInButtonText}>Signing In...</Text>
+                </View>
+              ) : (
+                <Text style={styles.signInButtonText}>Sign In</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.signUpButton}
+              onPress={() => navigation.navigate("SignUp")}
+            >
+              <Text style={styles.signUpButtonText}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </ImageBackground>
+    </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
+  signInBox: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 24,
+    width: "100%",
+    maxWidth: 400,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    minHeight: 470,
+  },
+  title: {
+    textAlign: "center",
+    fontSize: 28,
+    fontWeight: "600",
+    color: "#F97316",
+    marginBottom: 24,
+  },
+  errorContainer: {
+    backgroundColor: "#FEF2F2",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  errorText: {
+    textAlign: "center",
+    color: "#DC2626",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#374151",
+    marginBottom: 4,
+  },
+  input: {
+    width: "100%",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    borderRadius: 8,
+    fontSize: 14,
+    color: "#111827",
+  },
+  forgotPasswordContainer: {
+    alignItems: "flex-end",
+    marginBottom: 12,
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    color: "#F97316",
+  },
+  termsText: {
+    fontSize: 12,
+    color: "#6B7280",
+    textAlign: "center",
+    marginBottom: 20,
+    lineHeight: 16,
+  },
+  signInButton: {
+    width: "100%",
+    backgroundColor: "#F97316",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  signInButtonDisabled: {
+    backgroundColor: "#FB923C",
+  },
+  loadingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  signInButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  signUpButton: {
+    width: "100%",
+    backgroundColor: "#F97316",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  signUpButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+});
 
 export default SignIn;

@@ -1,5 +1,6 @@
 import React from "react";
-import { FaCheckCircle } from "react-icons/fa";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const planData = {
   Basic: {
@@ -58,47 +59,150 @@ const PlanCard = ({ planName, billing }) => {
   const priceLabel = billing === "monthly" ? "/month" : "/year";
 
   return (
-    <div
-      className={`bg-white shadow-lg rounded-2xl p-6 text-center border ${
-        plan.tag ? "border-[#FF7A00]" : "border-gray-200"
-      } relative hover:scale-105 transition-transform duration-300`}
+    <View
+      style={[
+        styles.card,
+        plan.tag && styles.cardHighlighted,
+      ]}
     >
       {plan.tag && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF7A00] text-white px-4 py-1 rounded-full text-xs font-semibold">
-          {plan.tag}
-        </span>
+        <View style={styles.tagContainer}>
+          <Text style={styles.tagText}>{plan.tag}</Text>
+        </View>
       )}
 
-      <h3 className="text-xl font-semibold mb-2">{planName}</h3>
+      <Text style={styles.planName}>{planName}</Text>
 
       {/* Price */}
-      <p className="text-3xl font-bold text-[#FF7A00] mb-4">
-        ${price}
-        <span className="text-sm text-gray-500">{priceLabel}</span>
-      </p>
+      <View style={styles.priceContainer}>
+        <Text style={styles.price}>${price}</Text>
+        <Text style={styles.priceLabel}>{priceLabel}</Text>
+      </View>
 
       {/* Features */}
-      <ul className="text-sm text-gray-700 space-y-2 mb-6 text-left min-h-[160px]">
+      <View style={styles.featuresContainer}>
         {plan.features.map((feature, idx) => (
-          <li key={idx} className="flex items-center gap-2">
-            <FaCheckCircle className="text-[#00C851]" />
-            {feature}
-          </li>
+          <View key={idx} style={styles.featureItem}>
+            <Icon name="check-circle" size={16} color="#00C851" />
+            <Text style={styles.featureText}>{feature}</Text>
+          </View>
         ))}
-      </ul>
+      </View>
 
       {/* Button */}
-      <button
-        className={`w-full py-2 rounded-lg font-semibold transition ${
-          plan.tag
-            ? "bg-[#FF7A00] text-white hover:bg-[#e96d00]"
-            : "border border-[#FF7A00] text-[#FF7A00] hover:bg-[#FFF0E6]"
-        }`}
+      <TouchableOpacity
+        style={[
+          styles.button,
+          plan.tag ? styles.buttonPrimary : styles.buttonSecondary,
+        ]}
       >
-        Choose {planName}
-      </button>
-    </div>
+        <Text
+          style={[
+            styles.buttonText,
+            plan.tag ? styles.buttonTextPrimary : styles.buttonTextSecondary,
+          ]}
+        >
+          Choose {planName}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  card: {
+    width: 280,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 24,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  cardHighlighted: {
+    borderColor: "#FF7A00",
+    borderWidth: 2,
+  },
+  tagContainer: {
+    position: "absolute",
+    top: -12,
+    alignSelf: "center",
+    backgroundColor: "#FF7A00",
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  tagText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  planName: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: "#111827",
+  },
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    marginBottom: 16,
+  },
+  price: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#FF7A00",
+  },
+  priceLabel: {
+    fontSize: 14,
+    color: "#6B7280",
+    marginLeft: 4,
+  },
+  featuresContainer: {
+    width: "100%",
+    marginBottom: 24,
+    minHeight: 160,
+  },
+  featureItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 8,
+  },
+  featureText: {
+    fontSize: 14,
+    color: "#374151",
+    flex: 1,
+  },
+  button: {
+    width: "100%",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonPrimary: {
+    backgroundColor: "#FF7A00",
+  },
+  buttonSecondary: {
+    borderWidth: 1,
+    borderColor: "#FF7A00",
+    backgroundColor: "transparent",
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  buttonTextPrimary: {
+    color: "#FFFFFF",
+  },
+  buttonTextSecondary: {
+    color: "#FF7A00",
+  },
+});
 
 export default PlanCard;

@@ -1,36 +1,99 @@
 import React from "react";
+import { View, StyleSheet, Animated } from "react-native";
 
 const SkeletonSearchCard = () => {
-  return (
-    <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden w-full max-w-3xl mx-auto animate-pulse">
+  const pulseAnim = new Animated.Value(0.3);
 
+  React.useEffect(() => {
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 0.3,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    pulse.start();
+    return () => pulse.stop();
+  }, []);
+
+  const opacity = pulseAnim;
+
+  return (
+    <View style={styles.container}>
       {/* Image Skeleton */}
-      <div className="md:w-1/3 w-full h-60 bg-gray-300"></div>
+      <View style={[styles.imageSkeleton, { opacity }]} />
 
       {/* Details */}
-      <div className="p-4 px-8 flex-1 space-y-4">
-
+      <View style={styles.detailsContainer}>
         {/* Name + ID */}
-        <div className="flex justify-between items-center">
-          <div className="h-4 bg-gray-300 rounded w-1/3"></div>
-          <div className="h-4 bg-gray-300 rounded w-16"></div>
-        </div>
+        <View style={styles.headerRow}>
+          <View style={[styles.skeletonBox, { width: "33%", opacity }]} />
+          <View style={[styles.skeletonBox, { width: 64, opacity }]} />
+        </View>
 
         {/* Profile details */}
-        <div className="space-y-2">
-          <div className="h-3 bg-gray-300 rounded w-1/2"></div>
-          <div className="h-3 bg-gray-300 rounded w-1/3"></div>
-          <div className="h-3 bg-gray-300 rounded w-2/3"></div>
-          <div className="h-3 bg-gray-300 rounded w-1/4"></div>
-          <div className="h-3 bg-gray-300 rounded w-1/2"></div>
-        </div>
+        <View style={styles.detailsRow}>
+          <View style={[styles.skeletonBox, { width: "50%", height: 12, opacity }]} />
+          <View style={[styles.skeletonBox, { width: "33%", height: 12, opacity }]} />
+          <View style={[styles.skeletonBox, { width: "66%", height: 12, opacity }]} />
+          <View style={[styles.skeletonBox, { width: "25%", height: 12, opacity }]} />
+          <View style={[styles.skeletonBox, { width: "50%", height: 12, opacity }]} />
+        </View>
 
         {/* Button */}
-        <div className="h-8 bg-gray-300 rounded w-32 mt-4"></div>
-
-      </div>
-    </div>
+        <View style={[styles.skeletonBox, { width: 128, height: 32, marginTop: 16, opacity }]} />
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    overflow: "hidden",
+    width: "100%",
+    maxWidth: 768,
+    alignSelf: "center",
+  },
+  imageSkeleton: {
+    width: "33.33%",
+    height: 240,
+    backgroundColor: "#D1D5DB",
+  },
+  detailsContainer: {
+    padding: 16,
+    paddingHorizontal: 32,
+    flex: 1,
+    gap: 16,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  detailsRow: {
+    gap: 8,
+  },
+  skeletonBox: {
+    backgroundColor: "#D1D5DB",
+    borderRadius: 4,
+    height: 16,
+  },
+});
 
 export default SkeletonSearchCard;

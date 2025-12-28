@@ -1,33 +1,38 @@
-
 // src/context/AuthContext.jsx
 
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
-
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Restore user on refresh
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-
-    if (token && storedUser) {
+    const restoreUser = async () => {
       try {
-        const parsed = JSON.parse(storedUser);
-        setUser(parsed);
-        setIsLoggedIn(true);
-      } catch (e) {
-        console.error("Invalid user JSON", e);
-        localStorage.removeItem("user");
+        const token = await AsyncStorage.getItem("token");
+        const storedUser = await AsyncStorage.getItem("user");
+
+        if (token && storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            setUser(parsed);
+            setIsLoggedIn(true);
+          } catch (e) {
+            console.error("Invalid user JSON", e);
+            await AsyncStorage.removeItem("user");
+          }
+        }
+      } catch (error) {
+        console.error("Error restoring user:", error);
       }
-    }
+    };
+
+    restoreUser();
   }, []);
 
   // LOGIN
@@ -47,8 +52,8 @@ export const AuthProvider = ({ children }) => {
       if (!token) return { success: false, message: "No token received" };
 
       // Load gender either from backend or signup stored value
-      const gender =
-        res.data.gender || localStorage.getItem("signupGender") || null;
+      const signupGender = await AsyncStorage.getItem("signupGender");
+      const gender = res.data.gender || signupGender || null;
 
       const userObj = {
         id: res.data.userId || null,
@@ -57,9 +62,9 @@ export const AuthProvider = ({ children }) => {
         roles: res.data.roles || [],
       };
 
-      // Save to localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(userObj));
+      // Save to AsyncStorage
+      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("user", JSON.stringify(userObj));
 
       setUser(userObj);
       setIsLoggedIn(true);
@@ -75,12 +80,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   // LOGOUT
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    setIsLoggedIn(false);
-    navigate("/signin");
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("user");
+      setUser(null);
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   return (

@@ -1,10 +1,31 @@
 import React from "react";
-
-import ForgotPassword from "../components/ForgotPassword/ForgotPassword";
+import { View, Text, StyleSheet } from "react-native";
 
 const ForgotPasswordPage = () => {
-  return <ForgotPassword />;
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Forgot Password</Text>
+      <Text style={styles.subtext}>This page is being converted to React Native</Text>
+    </View>
+  );
 };
 
-export default ForgotPasswordPage;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  subtext: {
+    fontSize: 16,
+    color: "#666",
+  },
+});
 
+export default ForgotPasswordPage;

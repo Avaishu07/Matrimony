@@ -1,27 +1,30 @@
 
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const apiSlice = createApi({
-  reducerPath: "api",
-  baseQuery: fetchBaseQuery({
+// Custom baseQuery to handle AsyncStorage token
+const baseQueryWithAuth = async (args, api, extraOptions) => {
+  // Get token from AsyncStorage
+  const tokenFromState = api.getState()?.auth?.token;
+  const token = tokenFromState || await AsyncStorage.getItem("token");
+
+  const baseQuery = fetchBaseQuery({
     baseUrl: "https://mttlprv1-production.up.railway.app",
-
-    prepareHeaders: (headers, { getState }) => {
-      // Try Redux auth state first
-      const tokenFromState = getState()?.auth?.token;
-
-      // Fallback to localStorage
-      const token = tokenFromState || localStorage.getItem("token");
-
+    prepareHeaders: (headers) => {
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
-
       headers.set("Content-Type", "application/json");
       return headers;
     },
-  }),
+  });
+
+  return baseQuery(args, api, extraOptions);
+};
+
+export const apiSlice = createApi({
+  reducerPath: "api",
+  baseQuery: baseQueryWithAuth,
 
   tagTypes: [
     "Profile",
